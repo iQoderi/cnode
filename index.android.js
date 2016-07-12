@@ -13,10 +13,12 @@ import {
 } from 'react-native';
 
 import CSideMenu from  './src/components/sidemenu';
+import RouterApp from './src/components/navigator';
+
 class cnode extends Component {
     render() {
         return (
-            <CSideMenu/>
+            <RouterApp/>
         );
     }
 }

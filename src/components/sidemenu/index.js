@@ -6,6 +6,7 @@ import {
     DrawerLayoutAndroid,
     View,
     Text,
+    Navigator,
     StyleSheet
 } from 'react-native';
 
@@ -18,6 +19,9 @@ class SideMenu extends Component {
                 drawerPosition={DrawerLayoutAndroid.positions.Left}
                 drawerWidth={280}
                 renderNavigationView={()=>navigationView}>
+                <View>
+                    <Text>HOME</Text>
+                </View>
             </DrawerLayoutAndroid>
         )
     }
