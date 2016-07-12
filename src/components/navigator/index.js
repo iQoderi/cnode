@@ -19,7 +19,7 @@ class RouterApp extends Component {
             <Navigator
             initialRoute={{name:defautName,component:defaultComponent}}
             configureScene={(route)=>{
-            return Navigator.SceneConfigs.PushFromRight; }}
+            return Navigator.SceneConfigs.FloatFromRight; }}
             renderScene={(route,navigator)=>{
             let Component=route.component;
             return <Component {...route.params} navigator={navigator}/>
@@ -28,6 +28,7 @@ class RouterApp extends Component {
 
     }
 }
+
 
 
 export  default RouterApp;
