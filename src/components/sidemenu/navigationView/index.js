@@ -14,6 +14,7 @@ import commonStyle from '../../../style/index.style';
 import MenuItem from '../MenuItem';
 
 const cLogo = require('../../../images/cnodelogo.png');
+const github = require('../../../images/github.png');
 const styles = StyleSheet.create({
     navBar: {
         height: 50,
@@ -28,9 +29,15 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderTopColor: '#ccc',
         height: 40,
-        justifyContent:'center',
+        alignItems:'center',
         flex:1,
-        paddingLeft:20
+        paddingLeft:20,
+        flexDirection:'row'
+    },
+    image:{
+        width:35,
+        height:35,
+        marginRight:20
     }
 });
 
@@ -95,6 +102,7 @@ const NavigationView = (
         </View>
         <View style={styles.bottomItem}>
             <View style={styles.bottomItemText}>
+                <Image source={github} style={styles.image}/>
                 <Text>github.com/iQoderi</Text>
             </View>
         </View>

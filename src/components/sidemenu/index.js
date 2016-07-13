@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import navigationView from './navigationView';
 import CommonStyle from '../../style/index.style';
-
+import Req from '../../config/requestConfig';
 const More = require('../../images/more.png');
 const Edit = require('../../images/edit.png');
 class SideMenu extends Component {
@@ -34,10 +34,50 @@ class SideMenu extends Component {
     }
 
     _onRefresh() {
-        ToastAndroid.show('已经是最新信息', ToastAndroid.LONG);
+        this.setState({
+            isRefreshing: true
+        });
+        const {getList}=this.props.action;
+        fetch(Req.topic)
+            .then((res)=> {
+                this.setState({
+                    isRefreshing: false
+                });
+                return res.json();
+            })
+            .then((json)=> {
+                if (json.success) {
+                    ToastAndroid.show('获取内容成功', ToastAndroid.SHORT);
+                    getList({title: '最新'}, json.data);
+                } else {
+                    ToastAndroid.show('获取内容失败', ToastAndroid.LONG);
+                }
+            });
+    }
+
+    componentDidMount() {
+
     }
 
     render() {
+        const {list}=this.props;
+        console.log(list);
+        const topics = list.data.map((each, index)=> {
+            let el = (<TouchableNativeFeedback
+                key={index}
+                id={each.id}
+                author_id={each.author_id}
+                background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
+                <View style={[styles.cell]}>
+                    <Text style={[styles.topic_color]}>{each.title}</Text>
+                    <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
+                        <Text style={[styles.put_top]}>{each.top ? '置顶' : each.tab}</Text>
+                        <Text style={styles.author}>{each.author.loginname}</Text>
+                    </View>
+                </View>
+            </TouchableNativeFeedback>);
+            return el;
+        });
         return (
             <DrawerLayoutAndroid
                 ref="drawer"
@@ -72,381 +112,7 @@ class SideMenu extends Component {
             titleColor="#666"
             colors={['#009100']}
             progressBackgroundColor="#fff"/>}>
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
-                            <View style={[styles.cell]}>
-                                <Text style={[styles.topic_color]}>中国最大的javascript开发者大会JSConf China...</Text>
-                                <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                                    <Text style={[styles.put_top]}>最新</Text>
-                                    <Text style={styles.author}>Qoder</Text>
-                                </View>
-                            </View>
-                        </TouchableNativeFeedback>
-
-
+                        {topics}
                     </ScrollView>
                 </View>
             </DrawerLayoutAndroid>

@@ -11,14 +11,18 @@ import {
     Text,
     View
 } from 'react-native';
-
-import CSideMenu from  './src/components/sidemenu';
+import  {Provider} from 'react-redux';
+import configStore from './src/store';
 import RouterApp from './src/components/navigator';
+
+const store = configStore();
 
 class cnode extends Component {
     render() {
         return (
-            <RouterApp/>
+            <Provider store={store}>
+                <RouterApp/>
+            </Provider>
         );
     }
 }

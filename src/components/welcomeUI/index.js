@@ -13,7 +13,7 @@ import {
 
 import  CommonStyles from '../../style/index.style';
 const welcome = require('../../images/cnode.jpg');
-import SideMenu from '../sidemenu';
+import SideMenu from '../../containers/sideMenu.container';
 
 class WelCome extends Component {
     // 构造
