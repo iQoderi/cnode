@@ -32,7 +32,7 @@ class TopicDetail extends  Component{
                 <View style={styles.flex}>
                 <WebView
                     javaScriptEnabled={true}
-                    source={{uri:content}}
+                    source={{uri:url}}
                     decelerationRate="normal"
                     domStorageEnabled={true}
                     style={styles.flex}>
