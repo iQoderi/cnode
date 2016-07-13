@@ -19,6 +19,8 @@ import {
 import navigationView from './navigationView';
 import CommonStyle from '../../style/index.style';
 import Req from '../../config/requestConfig';
+import TopicDetail from '../../components/topic.webView';
+import tabFilter from '../../library/tab.filter';
 const More = require('../../images/more.png');
 const Edit = require('../../images/edit.png');
 class SideMenu extends Component {
@@ -40,13 +42,13 @@ class SideMenu extends Component {
         const {getList}=this.props.action;
         fetch(Req.topic)
             .then((res)=> {
-                this.setState({
-                    isRefreshing: false
-                });
                 return res.json();
             })
             .then((json)=> {
                 if (json.success) {
+                    this.setState({
+                        isRefreshing: false
+                    });
                     ToastAndroid.show('获取内容成功', ToastAndroid.SHORT);
                     getList({title: '最新'}, json.data);
                 } else {
@@ -55,34 +57,56 @@ class SideMenu extends Component {
             });
     }
 
-    componentDidMount() {
+    _readTopic(id) {
+        const {navigator}=this.props;
+        fetch(Req.topicDetail+id)
+            .then((res)=>{
+                return res.json();
+            })
+            .then((json)=>{
+                if(json.success){
+                    navigator.push({
+                        name:'TopicDetail',
+                        component:TopicDetail,
+                        content:json.data.id
+                    })
+                }else{
+                    ToastAndroid.show('获取文章详情失败', ToastAndroid.LONG);
+                }
+            });
+    }
 
+    componentDidMount() {
+        this._onRefresh();
     }
 
     render() {
-        const {list}=this.props;
-        console.log(list);
+        const {list, navigator}=this.props;
         const topics = list.data.map((each, index)=> {
-            let el = (<TouchableNativeFeedback
+            let ele = (<TouchableNativeFeedback
                 key={index}
                 id={each.id}
                 author_id={each.author_id}
-                background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
+                background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}
+                onPress={()=>{this._readTopic(each.id)}}>
                 <View style={[styles.cell]}>
                     <Text style={[styles.topic_color]}>{each.title}</Text>
                     <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
-                        <Text style={[styles.put_top]}>{each.top ? '置顶' : each.tab}</Text>
+                        <Text
+                            style={[each.top?styles.put_top:styles.topiclist_tab]}>{each.top ? '置顶' : tabFilter(each.tab)}</Text>
                         <Text style={styles.author}>{each.author.loginname}</Text>
                     </View>
                 </View>
             </TouchableNativeFeedback>);
-            return el;
+            return ele;
         });
         return (
             <DrawerLayoutAndroid
                 ref="drawer"
                 drawerPosition={DrawerLayoutAndroid.positions.Left}
                 drawerWidth={280}
+                keyboardDismissMode="on-drag"
+                keyboardDismissMode="on-drag"
                 keyboardDismissMode="on-drag"
                 renderNavigationView={()=>navigationView}>
                 <View style={{flex:1}}>
@@ -168,7 +192,7 @@ const styles = StyleSheet.create({
         color: '#FFF'
     },
     topiclist_tab: {
-        backgroundColor: "#999",
+        backgroundColor: "#ccc",
         paddingLeft: 4,
         paddingRight: 4,
         paddingTop: 2,
@@ -177,7 +201,7 @@ const styles = StyleSheet.create({
         width: 40,
         borderRadius: 5,
         textAlign: 'center',
-        color: '#666'
+        color: '#e8e8e8'
     },
     author: {
         marginLeft: 5,

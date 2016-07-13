@@ -12,6 +12,13 @@ import {
 import WelcomeUI from  '../welcomeUI';
 
 class RouterApp extends Component {
+    renderScene(route){
+        if(route.name==='TopicDetail'){
+            return Navigator.SceneConfigs.PushFromRight;
+        }else{
+            return Navigator.SceneConfigs.FloatFromRight;
+        }
+    }
     render() {
         let defautName='welcome';
         let defaultComponent=WelcomeUI;
@@ -19,10 +26,10 @@ class RouterApp extends Component {
             <Navigator
             initialRoute={{name:defautName,component:defaultComponent}}
             configureScene={(route)=>{
-            return Navigator.SceneConfigs.FloatFromRight; }}
+            return Navigator.SceneConfigs.PushFromRight; }}
             renderScene={(route,navigator)=>{
             let Component=route.component;
-            return <Component {...route.params} navigator={navigator}/>
+            return <Component {...route.params} navigator={navigator} content={route.content}/>
             }}/>
         )
 

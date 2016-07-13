@@ -9,7 +9,7 @@ function reqMaker(path) {
 
 const Req = {
     topic: reqMaker('topics'),
-    topicDetail: reqMaker('topics/:id')
+    topicDetail: reqMaker('topic/')
 };
 
 export  default Req;
