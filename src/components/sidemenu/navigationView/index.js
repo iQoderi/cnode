@@ -7,7 +7,8 @@ import {
     View,
     Text,
     Image,
-    StyleSheet
+    StyleSheet,
+    TouchableOpacity
 } from 'react-native';
 
 import commonStyle from '../../../style/index.style';
@@ -15,6 +16,7 @@ import MenuItem from '../MenuItem';
 
 const cLogo = require('../../../images/cnodelogo.png');
 const github = require('../../../images/github.png');
+
 const styles = StyleSheet.create({
     navBar: {
         height: 50,
@@ -29,31 +31,19 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderTopColor: '#ccc',
         height: 40,
-        alignItems:'center',
-        flex:1,
-        paddingLeft:20,
-        flexDirection:'row'
+        alignItems: 'center',
+        flex: 1,
+        paddingLeft: 20,
+        flexDirection: 'row'
     },
-    image:{
-        width:35,
-        height:35,
-        marginRight:20
+    image: {
+        width: 35,
+        height: 35,
+        marginRight: 20
     }
 });
 
 const datas = [
-    {
-        name: "登陆",
-        tab: 'login'
-    },
-    {
-        name: "板块",
-        tab: 'modules',
-        style: {
-            height: 40,
-            backgroundColor: '#f2f2f2'
-        }
-    },
     {
         name: "最新",
         tab: 'new'
@@ -70,26 +60,10 @@ const datas = [
         name: '招聘',
         tab: 'job'
 
-    },
-    {
-        name: '其他',
-        tab: 'other',
-        style: {
-            height: 40,
-            backgroundColor: '#f2f2f2'
-        }
-    },
-    {
-        name: '设置',
-        tab: 'setting'
     }
 ];
 const MenuItems = datas.map((data)=> {
-    if (data.style) {
-        return <MenuItem name={data.name} tab={data.tab} style={data.style}/>
-    } else {
-        return <MenuItem name={data.name} tab={data.tab}/>
-    }
+    return <MenuItem name={data.name} tab={data.tab} press={()=>{alert(1)}}/>
 });
 
 const NavigationView = (
@@ -98,7 +72,11 @@ const NavigationView = (
             <Image source={cLogo} style={{width:150}}/>
         </View>
         <View>
+            <MenuItem name="登陆" tab="login"/>
+            <MenuItem name="板块" style={{height: 40, backgroundColor: '#e8e8e8'}}/>
             {MenuItems}
+            <MenuItem name="其他" style={{height: 40, backgroundColor: '#e8e8e8'}}/>
+            <MenuItem name="设置" tab="setting" press={()=>{alert(1)}}/>
         </View>
         <View style={styles.bottomItem}>
             <View style={styles.bottomItemText}>

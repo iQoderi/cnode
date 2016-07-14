@@ -12,30 +12,30 @@ import {
 import WelcomeUI from  '../welcomeUI';
 
 class RouterApp extends Component {
-    renderScene(route){
-        if(route.name==='TopicDetail'){
+    renderScene(route) {
+        if (route.name === 'TopicDetail') {
             return Navigator.SceneConfigs.PushFromRight;
-        }else{
+        } else {
             return Navigator.SceneConfigs.FloatFromRight;
         }
     }
+
     render() {
-        let defautName='welcome';
-        let defaultComponent=WelcomeUI;
+        let defautName = 'welcome';
+        let defaultComponent = WelcomeUI;
         return (
             <Navigator
-            initialRoute={{name:defautName,component:defaultComponent}}
-            configureScene={(route)=>{
+                initialRoute={{name:defautName,component:defaultComponent}}
+                configureScene={(route)=>{
             return Navigator.SceneConfigs.PushFromRight; }}
-            renderScene={(route,navigator)=>{
+                renderScene={(route,navigator)=>{
             let Component=route.component;
-            return <Component {...route.params} navigator={navigator} content={route.content}/>
+            return <Component {...route.params} name={route.name} navigator={navigator} content={route.content}/>
             }}/>
         )
 
     }
 }
-
 
 
 export  default RouterApp;

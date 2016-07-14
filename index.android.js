@@ -14,8 +14,19 @@ import {
 import  {Provider} from 'react-redux';
 import configStore from './src/store';
 import RouterApp from './src/components/navigator';
+import Storage from 'react-native-storage';
+
+let storage = new Storage({
+    size: 1000,
+    defaultExpires: 1000 * 3600 * 24,
+    enableCache: true,
+    sync: {}
+});
+
+global.storage = storage;
 
 const store = configStore();
+
 
 class cnode extends Component {
     render() {

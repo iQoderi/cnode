@@ -14,7 +14,8 @@ class MenuItem extends Component {
     render() {
         const {name}=this.props;
         return (
-            <TouchableOpacity>
+            <TouchableOpacity
+                onPress={this.props.press}>
                 <View style={[styles.item,this.props.style]}>
                     <Text style={[styles.itemText]}>{name}</Text>
                 </View>

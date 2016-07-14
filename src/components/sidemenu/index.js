@@ -14,20 +14,50 @@ import {
     RefreshControl,
     Alert,
     ToastAndroid,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    Switch
 } from 'react-native';
-import navigationView from './navigationView';
 import CommonStyle from '../../style/index.style';
 import Req from '../../config/requestConfig';
 import TopicDetail from '../../components/topic.webView';
+import MenuItem from './MenuItem';
+import AboutWebView from '../about.webView';
 import tabFilter from '../../library/tab.filter';
+
+
+const cLogo = require('../../images/cnodelogo.png');
+const github = require('../../images/github.png');
 const More = require('../../images/more.png');
 const Edit = require('../../images/edit.png');
+
+const datas = [
+    {
+        name: "最新",
+        tab: 'new'
+    },
+    {
+        name: '分享',
+        tab: 'share'
+    },
+    {
+        name: '问答',
+        tab: "ask"
+    },
+    {
+        name: '招聘',
+        tab: 'job'
+
+    }
+];
+
+
 class SideMenu extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isRefreshing: false
+            isRefreshing: false,
+            openSmallTail: true,
+            openSaveTraffic: true
         };
     }
 
@@ -35,11 +65,22 @@ class SideMenu extends Component {
         this.refs.drawer.openDrawer();
     }
 
+    _offDrawer() {
+        this.refs.drawer.closeDrawer();
+    }
+
+    _goSetting() {
+        const {getList}=this.props.action;
+        this._offDrawer();
+        getList({title: '设置'}, []);
+    }
+
     _onRefresh() {
         this.setState({
             isRefreshing: true
         });
         const {getList}=this.props.action;
+
         fetch(Req.topic)
             .then((res)=> {
                 return res.json();
@@ -51,29 +92,56 @@ class SideMenu extends Component {
                     });
                     ToastAndroid.show('获取内容成功', ToastAndroid.SHORT);
                     getList({title: '最新'}, json.data);
+                    storage.save({
+                        key: 'topicList',
+                        rawData: json.data
+
+                    });
                 } else {
                     ToastAndroid.show('获取内容失败', ToastAndroid.LONG);
                 }
             });
     }
 
+
+    _SmallTailChange(value) {
+        this.setState({
+            openSmallTail: value
+        });
+    }
+
+    _SaveTraffic(value) {
+        this.setState({
+            openSaveTraffic: value
+        });
+    }
+
     _readTopic(id) {
         const {navigator}=this.props;
-        fetch(Req.topicDetail+id)
-            .then((res)=>{
+        fetch(Req.topicDetail + id)
+            .then((res)=> {
                 return res.json();
             })
-            .then((json)=>{
-                if(json.success){
+            .then((json)=> {
+                if (json.success) {
                     navigator.push({
-                        name:'TopicDetail',
-                        component:TopicDetail,
-                        content:json.data.id
+                        name: 'TopicDetail',
+                        component: TopicDetail,
+                        content: json.data.id
                     })
-                }else{
+                } else {
                     ToastAndroid.show('获取文章详情失败', ToastAndroid.LONG);
                 }
             });
+    }
+
+    _goAbout(name, content) {
+        const {navigator}=this.props;
+        navigator.push({
+            name: name,
+            component: AboutWebView,
+            content: content
+        })
     }
 
     componentDidMount() {
@@ -81,9 +149,41 @@ class SideMenu extends Component {
     }
 
     render() {
-        const {list, navigator}=this.props;
+        const {list}=this.props;
+        const qoder = 'https://github.com/iQoderi';
+        const CNodeUrl = 'http://cnodejs.org/about';
+        const MenuItems = datas.map((data, index)=> {
+            return <MenuItem
+                name={data.name}
+                tab={data.tab}
+                key={index}
+                press={()=>{alert(1)}}/>
+        });
+        const navigationView = (
+            <View style={[CommonStyle.flex,{backgroundColor:'#f5f5f5'}]}>
+                <View style={styles.navBar2}>
+                    <Image source={cLogo} style={{width:150}}/>
+                </View>
+                <View>
+                    <MenuItem name="登陆" tab="login"/>
+                    <MenuItem name="板块" style={{height: 40, backgroundColor: '#e8e8e8'}}/>
+                    {MenuItems}
+                    <MenuItem name="其他" style={{height: 40, backgroundColor: '#e8e8e8'}}/>
+                    <MenuItem name="设置"
+                              tab="setting"
+                              press={this._goSetting.bind(this)}/>
+                </View>
+                <View style={styles.bottomItem}>
+                    <View style={styles.bottomItemText}>
+                        <Image source={github} style={styles.image2}/>
+                        <Text>github.com/iQoderi</Text>
+                    </View>
+                </View>
+            </View>
+        );
+
         const topics = list.data.map((each, index)=> {
-            let ele = (<TouchableNativeFeedback
+            let element = (<TouchableNativeFeedback
                 key={index}
                 id={each.id}
                 author_id={each.author_id}
@@ -98,15 +198,67 @@ class SideMenu extends Component {
                     </View>
                 </View>
             </TouchableNativeFeedback>);
-            return ele;
+            return element;
         });
+
+        const Setting = (
+            <View style={[styles.flex,styles.wrapper]}>
+                <View style={[styles.item,styles.borderTop]}>
+                    <Text style={styles.itemFont}>小尾巴</Text>
+                    <View style={styles.rightSpan}>
+                        <Switch
+                            onValueChange={(value)=>{this._SmallTailChange(value)}}
+                            value={this.state.openSmallTail}/>
+                    </View>
+                </View>
+                <View style={[styles.item]}>
+                    <Text style={styles.itemFont}>省流量</Text>
+                    <View style={styles.rightSpan}>
+                        <Switch
+                            onValueChange={(value)=>{this._SaveTraffic(value)}}
+                            value={this.state.openSaveTraffic}/>
+                    </View>
+                </View>
+                <View style={styles.title}>
+                    <Text style={styles.titleText}>关于</Text>
+                </View>
+                <View style={[styles.item,styles.borderTop]}>
+                    <Text style={styles.itemFont}>当前版本</Text>
+                    <View style={styles.rightSpan}>
+                        <Text style={[styles.smallFont]}>1.0.0</Text>
+                    </View>
+                </View>
+                <View style={[styles.item]}>
+                    <Text style={styles.itemFont}>意见反馈</Text>
+                    <View style={styles.rightSpan}>
+                        <Text style={[styles.smallFont,styles.right]}>Email</Text>
+                    </View>
+                </View>
+                <TouchableNativeFeedback
+                    onPress={()=>{this._goAbout('关于作者',qoder)}}
+                    background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
+                    <View style={[styles.item]}>
+                        <Text style={styles.itemFont}>关于作者</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <TouchableNativeFeedback
+                    onPress={()=>{this._goAbout('关于CNode社区',CNodeUrl)}}
+                    background={TouchableNativeFeedback.Ripple('#e8e8e8',false)}>
+                    <View style={[styles.item]}>
+                        <Text style={styles.itemFont}>关于CNode社区</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <View style={styles.center}>
+                    <Text style={styles.smallFont}>&copy;2016 Qoder</Text>
+                </View>
+
+            </View>
+        );
         return (
             <DrawerLayoutAndroid
                 ref="drawer"
                 drawerPosition={DrawerLayoutAndroid.positions.Left}
                 drawerWidth={280}
-                keyboardDismissMode="on-drag"
-                keyboardDismissMode="on-drag"
                 keyboardDismissMode="on-drag"
                 renderNavigationView={()=>navigationView}>
                 <View style={{flex:1}}>
@@ -117,27 +269,31 @@ class SideMenu extends Component {
                                 <Image source={More} style={styles.image}/>
                             </TouchableOpacity>
                             <TouchableOpacity>
-                                <Text style={styles.text}>最新</Text>
+                                <Text style={styles.text}>{list.title}</Text>
                             </TouchableOpacity>
-                            <View style={styles.editImage}>
-                                <TouchableOpacity>
-                                    <Image source={Edit} style={styles.image}/>
-                                </TouchableOpacity>
-                            </View>
+                            {list.title === '设置' ? <Text>""</Text> : (
+                                <View style={styles.editImage}>
+                                    <TouchableOpacity>
+                                        <Image source={Edit} style={styles.image}/>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
                         </View>
                     </View>
-                    <ScrollView
-                        refreshControl={
-          <RefreshControl
-            refreshing={this.state.isRefreshing}
-            onRefresh={this._onRefresh.bind(this)}
-            tintColor="#ff0000"
-            title="下拉刷新..."
-            titleColor="#666"
-            colors={['#009100']}
-            progressBackgroundColor="#fff"/>}>
-                        {topics}
-                    </ScrollView>
+                    {list.title === '设置' ? Setting : (
+                        <ScrollView
+                            refreshControl={
+                            <RefreshControl
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={this._onRefresh.bind(this)}
+                            tintColor="#ff0000"
+                            title="下拉刷新..."
+                            titleColor="#666"
+                            colors={['#009100']}
+                            progressBackgroundColor="#fff"/>}>
+                            {topics}
+                        </ScrollView>
+                    )}
                 </View>
             </DrawerLayoutAndroid>
         )
@@ -207,6 +363,76 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         fontSize: 14,
         color: '#666'
+    },
+    navBar2: {
+        height: 50,
+        backgroundColor: '#444'
+    },
+    bottomItem: {
+        flex: 1,
+        alignItems: 'flex-end',
+        flexDirection: "row"
+    },
+    bottomItemText: {
+        borderTopWidth: 1,
+        borderTopColor: '#ccc',
+        height: 40,
+        alignItems: 'center',
+        flex: 1,
+        paddingLeft: 20,
+        flexDirection: 'row'
+    },
+    image2: {
+        width: 35,
+        height: 35,
+        marginRight: 20
+    },
+    flex: {
+        flex: 1
+    },
+    wrapper: {
+        paddingTop: 10
+    },
+    item: {
+        height: 45,
+        paddingLeft: 20,
+        paddingRight: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e8e8e8',
+        backgroundColor: "#FFF",
+        flexDirection: "row",
+        alignItems: 'center'
+    },
+    borderTop: {
+        borderTopWidth: 1,
+        borderTopColor: '#e8e8e8'
+    },
+    itemFont: {
+        fontSize: 16
+    },
+    titleText: {
+        fontSize: 14,
+        color: '#666',
+    },
+    title: {
+        paddingLeft: 20,
+        height: 35,
+        flexDirection: "row",
+        alignItems: 'center'
+    },
+    center: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20
+    },
+    rightSpan: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: 'flex-end'
+    },
+    smallFont: {
+        color: '#666',
+        fontSize: 12
     }
 });
 
