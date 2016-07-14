@@ -5,6 +5,7 @@ import {GET_LIST} from '../constants/const';
 
 const initialState = {
     title: '最新',
+    tab: '',
     data: []
 };
 
@@ -13,9 +14,10 @@ const list = function (state = initialState, action) {
         case GET_LIST:
             return {
                 title: action.tab.title,
+                tab:action.tab.value,
                 data: action.data
             };
-        
+
         default:
             return initialState;
     }

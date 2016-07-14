@@ -32,8 +32,12 @@ const Edit = require('../../images/edit.png');
 
 const datas = [
     {
-        name: "最新",
-        tab: 'new'
+        name: '最新',
+        tab: ''
+    },
+    {
+        name: "精华",
+        tab: 'good'
     },
     {
         name: '分享',
@@ -75,13 +79,14 @@ class SideMenu extends Component {
         getList({title: '设置'}, []);
     }
 
-    _onRefresh() {
+    _onRefresh(title = '最新', tab = '') {
         this.setState({
             isRefreshing: true
         });
         const {getList}=this.props.action;
-
-        fetch(Req.topic)
+        const {list}=this.props;
+        let reqUrl = `${Req.topic}?tab=${tab}`;
+        fetch(reqUrl)
             .then((res)=> {
                 return res.json();
             })
@@ -90,8 +95,15 @@ class SideMenu extends Component {
                     this.setState({
                         isRefreshing: false
                     });
+
+                    const topicTab = {
+                        title: title,
+                        value: tab
+                    };
+
+
+                    getList(topicTab, json.data);
                     ToastAndroid.show('获取内容成功', ToastAndroid.SHORT);
-                    getList({title: '最新'}, json.data);
                     storage.save({
                         key: 'topicList',
                         rawData: json.data
@@ -103,6 +115,15 @@ class SideMenu extends Component {
             });
     }
 
+    _pullRefresh() {
+        const {list}=this.props;
+        this._onRefresh(list.title, list.tab);
+    }
+
+    _tabTopic(name, tab) {
+        this._offDrawer();
+        this._onRefresh(name, tab)
+    }
 
     _SmallTailChange(value) {
         this.setState({
@@ -145,7 +166,7 @@ class SideMenu extends Component {
     }
 
     componentDidMount() {
-        this._onRefresh();
+        this._pullRefresh();
     }
 
     render() {
@@ -157,7 +178,7 @@ class SideMenu extends Component {
                 name={data.name}
                 tab={data.tab}
                 key={index}
-                press={()=>{alert(1)}}/>
+                press={()=>{this._tabTopic(data.name,data.tab)}}/>
         });
         const navigationView = (
             <View style={[CommonStyle.flex,{backgroundColor:'#f5f5f5'}]}>
@@ -193,7 +214,7 @@ class SideMenu extends Component {
                     <Text style={[styles.topic_color]}>{each.title}</Text>
                     <View style={[CommonStyle.flex,CommonStyle.row,{marginTop:5}]}>
                         <Text
-                            style={[each.top?styles.put_top:styles.topiclist_tab]}>{each.top ? '置顶' : tabFilter(each.tab)}</Text>
+                            style={[(each.top||each.good)?styles.put_top:styles.topiclist_tab]}>{each.top ? '置顶' : (each.good ? '精华' : tabFilter(each.tab))}</Text>
                         <Text style={styles.author}>{each.author.loginname}</Text>
                     </View>
                 </View>
@@ -285,7 +306,7 @@ class SideMenu extends Component {
                             refreshControl={
                             <RefreshControl
                             refreshing={this.state.isRefreshing}
-                            onRefresh={this._onRefresh.bind(this)}
+                            onRefresh={this._pullRefresh.bind(this)}
                             tintColor="#ff0000"
                             title="下拉刷新..."
                             titleColor="#666"
