@@ -9,9 +9,9 @@
 
 ```javascript
 
-1.git clone https://github.com/iQoderi/cnode.git
+1. git clone https://github.com/iQoderi/cnode.git
 
-2.npm install 
+2. npm install 
 
 ```
 
@@ -19,9 +19,9 @@
 
 
 ```javascript
-1.react-native start
+1. react-native start
 
-2.react run-android
+2. react run-android
 ```
 
 **确保你的电脑已经配置好了react-native开发环境**
