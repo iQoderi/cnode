@@ -21,7 +21,7 @@
 ```javascript
 1. react-native start
 
-2. react run-android
+2. react-native run-android
 ```
 
 **确保你的电脑已经配置好了react-native开发环境**
